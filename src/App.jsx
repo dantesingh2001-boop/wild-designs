@@ -28,6 +28,11 @@ export default function App() {
       ? products
       : products.filter((p) => p.category === active);
 
+  const handleBuyNow = (product) => {
+    // Future: replace this with your payment provider integration
+    alert(`You selected: ${product.title} (${product.price}). Payment integration goes here!`);
+  };
+
   return (
     <div style={styles.page}>
       <header style={styles.hero}>
@@ -69,7 +74,12 @@ export default function App() {
             <h3>{item.title}</h3>
             <p style={{ opacity: 0.7 }}>{item.category}</p>
             <p style={styles.price}>{item.price}</p>
-            <button style={styles.buy}>Buy Now</button>
+            <button
+              style={styles.buy}
+              onClick={() => handleBuyNow(item)}
+            >
+              Buy Now
+            </button>
           </div>
         ))}
       </section>
