@@ -1,22 +1,323 @@
-function App() {
-  return (
-    <div style={{ 
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #ff00cc, #3333ff)",
-      color: "white",
-      fontFamily: "Arial, sans-serif",
-      padding: "40px"
-    }}>
-      <h1 style={{ fontSize: "3rem" }}>Wild Designs</h1>
-      <p style={{ fontSize: "1.2rem", maxWidth: "600px" }}>
-        Premium digital designs made to stand out.
-      </p>
+import { useState } from "react";
 
-      <blockquote style={{ marginTop: "30px", fontStyle: "italic" }}>
-        “Design is intelligence made visible.”
-      </blockquote>
+const products = [
+  { id: 1, title: "Neon Logo Pack", category: "Logos", price: "$15", downloadUrl: "/downloads/neon-logo.zip" },
+  { id: 2, title: "Cyber UI Kit", category: "UI Kits", price: "$25", downloadUrl: "/downloads/cyber-ui.zip" },
+  { id: 3, title: "Poster Blast", category: "Posters", price: "$10", downloadUrl: "/downloads/poster-blast.zip" },
+  { id: 4, title: "Brand Identity Pro", category: "Branding", price: "$40", downloadUrl: "/downloads/brand-identity.zip" },
+  { id: 5, title: "Wild Banner Set", category: "Banners", price: "$18", downloadUrl: "/downloads/wild-banner.zip" },
+  { id: 6, title: "Minimal UI Kit", category: "UI Kits", price: "$22", downloadUrl: "/downloads/minimal-ui.zip" },
+  { id: 7, title: "Streetwear Logo", category: "Logos", price: "$20", downloadUrl: "/downloads/streetwear-logo.zip" },
+  { id: 8, title: "Event Poster Pack", category: "Posters", price: "$14", downloadUrl: "/downloads/event-poster.zip" },
+];
+
+const tabs = ["All", "Logos", "UI Kits", "Posters", "Branding", "Banners"];
+
+const quotes = [
+  "Design is intelligence made visible.",
+  "Good design is good business.",
+  "Creativity takes courage.",
+  "Design speaks louder than words.",
+];
+
+export default function App() {
+  const [active, setActive] = useState("All");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [processing, setProcessing] = useState(false);
+
+  const filtered =
+    active === "All"
+      ? products
+      : products.filter((p) => p.category === active);
+
+  const openModal = (product) => {
+    setSelectedProduct(product);
+    setModalOpen(true);
+    setProcessing(false);
+  };
+
+  const handlePayment = (method) => {
+    setProcessing(true);
+
+    // Simulate payment processing
+    setTimeout(() => {
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = selectedProduct.downloadUrl;
+      link.download = selectedProduct.title + ".zip";
+      link.click();
+
+      // Close modal and reset
+      setModalOpen(false);
+      setSelectedProduct(null);
+      setProcessing(false);
+
+      alert(`Payment successful via ${method}! Download started.`);
+    }, 1200);
+  };
+
+  return (
+    <div style={styles.page}>
+      <header style={styles.hero}>
+        <h1 style={styles.title}>Wild Designs</h1>
+        <p style={styles.subtitle}>
+          Premium digital assets crafted to dominate attention.
+        </p>
+      </header>
+
+      <section style={styles.quotes}>
+        {quotes.map((q, i) => (
+          <blockquote key={i} style={styles.quote}>
+            “{q}”
+          </blockquote>
+        ))}
+      </section>
+
+      <section style={styles.tabs}>
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActive(tab)}
+            style={{
+              ...styles.tab,
+              background:
+                active === tab
+                  ? "linear-gradient(135deg,#ff00cc,#3333ff)"
+                  : "rgba(255,255,255,0.08)",
+            }}
+          >
+            {tab}
+          </button>
+        ))}
+      </section>
+
+      <section style={styles.grid}>
+        {filtered.map((item) => (
+          <div key={item.id} style={styles.card}>
+            <h3>{item.title}</h3>
+            <p style={{ opacity: 0.7 }}>{item.category}</p>
+            <p style={styles.price}>{item.price}</p>
+            <button
+              style={styles.buy}
+              onClick={() => openModal(item)}
+            >
+              Buy Now
+            </button>
+          </div>
+        ))}
+      </section>
+
+      <section style={styles.info}>
+        <h2>Why Wild Designs?</h2>
+        <p>
+          We craft premium visuals for creators, brands, and startups that want
+          to stand out instantly.
+        </p>
+      </section>
+
+      <footer style={styles.footer}>
+        © 2026 Wild Designs — Built wild.
+      </footer>
+
+      {/* Modal */}
+      {modalOpen && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modal}>
+            {!processing ? (
+              <>
+                <h2 style={{ marginBottom: "15px" }}>
+                  Pay for {selectedProduct.title} ({selectedProduct.price})
+                </h2>
+                <p style={{ marginBottom: "20px" }}>Choose a payment method:</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <button
+                    style={styles.paymentBtn}
+                    onClick={() => handlePayment("PayPal")}
+                  >
+                    PayPal
+                  </button>
+                  <button
+                    style={styles.paymentBtn}
+                    onClick={() => handlePayment("UPI")}
+                  >
+                    UPI
+                  </button>
+                  <button
+                    style={styles.paymentBtn}
+                    onClick={() => handlePayment("Test Mode")}
+                  >
+                    Test Mode
+                  </button>
+                </div>
+                <button
+                  style={styles.closeBtn}
+                  onClick={() => setModalOpen(false)}
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <div style={styles.processing}>
+                <div style={styles.loader}></div>
+                <p>Processing Payment...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default App;
+const styles = {
+  page: {
+    minHeight: "100vh",
+    width: "100%",
+    background: "radial-gradient(circle at top, #1b1b3a, #000)",
+    color: "#fff",
+    fontFamily: "Arial, sans-serif",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    position: "relative",
+  },
+  hero: {
+    padding: "80px 20px",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: "4rem",
+    background: "linear-gradient(135deg,#ff00cc,#00ffff)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+  },
+  subtitle: {
+    opacity: 0.85,
+    fontSize: "1.2rem",
+    marginTop: "12px",
+  },
+  quotes: {
+    textAlign: "center",
+    maxWidth: "800px",
+    marginBottom: "40px",
+  },
+  quote: {
+    fontStyle: "italic",
+    opacity: 0.7,
+    marginBottom: "10px",
+  },
+  tabs: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "12px",
+    justifyContent: "center",
+    marginBottom: "40px",
+  },
+  tab: {
+    padding: "12px 20px",
+    borderRadius: "999px",
+    border: "none",
+    color: "#fff",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  grid: {
+    width: "100%",
+    maxWidth: "1100px",
+    padding: "0 20px",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gap: "25px",
+  },
+  card: {
+    background: "rgba(255,255,255,0.08)",
+    borderRadius: "22px",
+    padding: "22px",
+    backdropFilter: "blur(12px)",
+  },
+  price: {
+    fontWeight: "bold",
+    marginTop: "10px",
+  },
+  buy: {
+    marginTop: "15px",
+    width: "100%",
+    padding: "12px",
+    borderRadius: "14px",
+    border: "none",
+    background: "linear-gradient(135deg,#ff00cc,#3333ff)",
+    color: "#fff",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  info: {
+    maxWidth: "700px",
+    textAlign: "center",
+    marginTop: "60px",
+    opacity: 0.85,
+  },
+  footer: {
+    marginTop: "60px",
+    paddingBottom: "30px",
+    opacity: 0.6,
+  },
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.75)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    background: "rgba(255,255,255,0.05)",
+    backdropFilter: "blur(16px)",
+    padding: "30px",
+    borderRadius: "20px",
+    minWidth: "320px",
+    maxWidth: "400px",
+    textAlign: "center",
+  },
+  paymentBtn: {
+    padding: "12px",
+    borderRadius: "12px",
+    border: "none",
+    background: "linear-gradient(135deg,#ff00cc,#3333ff)",
+    color: "#fff",
+    fontWeight: "bold",
+    cursor: "pointer",
+  },
+  closeBtn: {
+    marginTop: "15px",
+    padding: "10px 20px",
+    borderRadius: "12px",
+    border: "none",
+    background: "rgba(255,255,255,0.2)",
+    color: "#fff",
+    cursor: "pointer",
+  },
+  processing: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "20px",
+  },
+  loader: {
+    width: "50px",
+    height: "50px",
+    border: "5px solid rgba(255,255,255,0.3)",
+    borderTop: "5px solid #ff00cc",
+    borderRadius: "50%",
+    animation: "spin 1s linear infinite",
+  },
+  // Keyframes for spinner animation
+  "@keyframes spin": {
+    "0%": { transform: "rotate(0deg)" },
+    "100%": { transform: "rotate(360deg)" },
+  },
+};
