@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://dantesingh2001-boop.github.io/wild-designs"
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "deploy": "gh-pages -d dist"
-},
+  "homepage": "https://dantesingh2001-boop.github.io/wild-designs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
