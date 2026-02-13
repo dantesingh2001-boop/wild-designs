@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://dantesingh2001.github.io/wild-designs",
+  "homepage": "https://dantesingh2001-boop.github.io/wild-designs"
 "scripts": {
   "dev": "vite",
   "build": "vite build",
